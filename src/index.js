@@ -24,17 +24,22 @@ function renderCard (toy) {
   card.innerHTML = `
     <h2>${toy.name}</h2>
       <img src="${toy.image}" class="toy-avatar"/>
-      <p>0 likes</p>
+      <p>${toy.likes}</p>
       <button class="like-btn" id="${toy.id}">Like ❤️</button>
   `
   document.getElementById("toy-collection").appendChild(card)
 
+  card.querySelector("button.like-btn").addEventListener("click", () => {
+    toy.likes += 1 
+    card.querySelector("p").textContent = toy.likes
+    updateLikes(toy)
+  })
 }
 
 function init () {
   getToys()
 }
-// init()
+init()
 
 
 function getToys () {
@@ -75,6 +80,25 @@ function createCard (toyObject) {
     },
 
     body: JSON.stringify(toyObject)
+  })
+  .then(resp => resp.json())
+  .then(toy => console.log(toy))
+}
+
+//
+
+function updateLikes (toyObject) {
+  fetch(`http://localhost:3000/toys/${toyObject.id}`, {
+    method: "PATCH",
+
+    headers: 
+    {
+      "Content-type": "application/json"
+    },
+
+    body: JSON.stringify({
+      likes: toyObject.likes
+    })
   })
   .then(resp => resp.json())
   .then(toy => console.log(toy))
