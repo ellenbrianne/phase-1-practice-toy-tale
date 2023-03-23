@@ -34,7 +34,7 @@ function renderCard (toy) {
 function init () {
   getToys()
 }
-init()
+// init()
 
 
 function getToys () {
@@ -45,34 +45,37 @@ function getToys () {
   })
 }
 
+//
 
+let form = document.querySelector("form.add-toy-form")
+form.addEventListener("submit", formSubmit)
 
-// let submitBtn = document.querySelector("input.submit")
+function formSubmit (e) {
+  e.preventDefault()
 
-// submitBtn.addEventListener("click", (e) => {
-//   e.preventDefault()
-//   let inputForm = e.target.parentNode
-//   let input = inputForm.querySelectorAll("input.input-text")
-//   let name = input[0].value
-//   let image = input[1].value
+  let toyObject = {
+    name: e.target.name.value,
+    image: e.target.image.value,
+    likes: 0
+  }
 
-//   fetch("http://localhost:3000/toys", {
+  renderCard(toyObject)
+  createCard(toyObject)
 
-//     method: "POST",
+}
 
-//     headers: 
-//     {
-//       "Content-type": "application/json",
-//       Accept: "application/json"
-//     },
+function createCard (toyObject) {
+  fetch("http://localhost:3000/toys", {
+    method: "POST",
 
-//     body: JSON.stringify({
-//       "name": name,
-//       "image": image,
-//       "likes": 0
-//     })
+    headers: 
+    {
+      "Content-type": "application/json",
+      Accept: "application/json"
+    },
 
-//   })
-//   .then((resp) => resp.json())
-//   .then((resp) => console.log((JSON.stringify(resp))))
-// })
+    body: JSON.stringify(toyObject)
+  })
+  .then(resp => resp.json())
+  .then(toy => console.log(toy))
+}
